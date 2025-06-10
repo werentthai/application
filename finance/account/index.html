@@ -113,39 +113,15 @@
     </div>
 
     <script>
-        // ดึง ID จาก URL path
-        function getAccountIdFromPath() {
-            const path = window.location.pathname;
-            console.log('Current path:', path);
-
-            // รูปแบบ: /application/finance/account/683ed7ecfa9257ad32397d5b
-            const pathParts = path.split('/').filter(part => part !== '');
-            console.log('Path parts:', pathParts);
-
-            // หา index ของ 'account'
-            const accountIndex = pathParts.indexOf('account');
-
-            if (accountIndex !== -1 && accountIndex + 1 < pathParts.length) {
-                const id = pathParts[accountIndex + 1];
-                console.log('Found ID from path:', id);
-                return id;
-            }
-
-            // ถ้าหาไม่เจอใน path ให้ลองหาใน URL parameter
+        // ดึง ID จาก URL parameter
+        function getAccountIdFromParams() {
             const urlParams = new URLSearchParams(window.location.search);
-            const paramId = urlParams.get('id');
-            if (paramId) {
-                console.log('Found ID from parameter:', paramId);
-                return paramId;
-            }
-
-            console.log('Using default ID');
-            return '12345'; // default ID
+            return urlParams.get('id') || '12345'; // default ID
         }
 
         // สร้าง URL schemes ของแอป
         function createAppSchemes() {
-            const accountId = getAccountIdFromPath();
+            const accountId = getAccountIdFromParams();
 
             return {
                 ios: `your-app://finance/account/${accountId}`,
@@ -226,7 +202,7 @@
         // เริ่มทำงานเมื่อ page โหลดเสร็จ
         window.addEventListener('load', () => {
             const platform = detectPlatform();
-            const accountId = getAccountIdFromPath();
+            const accountId = getAccountIdFromParams();
 
             console.log(`Platform: ${platform}, Account ID: ${accountId}`);
 
